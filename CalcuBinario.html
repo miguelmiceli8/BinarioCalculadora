@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BinConverter - Calculadora Binário para Decimal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+       
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+
+        .glow-focus:focus-within {
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-green-500 selection:text-white">
+
+
+    <nav class="w-full border-b border-slate-800 bg-slate-900/50 backdrop-blur-md fixed top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="binary" class="text-green-500 w-8 h-8"></i>
+                    <span class="font-bold text-xl tracking-tight text-white">Bin<span class="text-green-500">Converter</span></span>
+                </div>
+                <div class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+                    <a href="#ferramenta" class="hover:text-green-400 transition-colors">Calculadora</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+    <main class="flex-grow pt-24 pb-12 px-4 sm:px-6">
+        <div class="max-w-4xl mx-auto text-center mb-12 space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                Conversão em Tempo Real
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">
+                Traduzindo a linguagem <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-600">das máquinas.</span>
+            </h1>
+            <p class="text-lg text-slate-400 max-w-2xl mx-auto">
+                Transforme sequências binárias em números decimais instantaneamente. 
+                Simples, rápido e direto no seu navegador.
+            </p>
+        </div>
+
+     
+        <section id="ferramenta" class="max-w-3xl mx-auto">
+            <div class="bg-slate-800/50 rounded-2xl border border-slate-700 p-1 shadow-2xl glow-focus transition-shadow duration-500">
+                <div class="bg-slate-900 rounded-xl p-6 sm:p-10 border border-slate-800">
+                    
+                    <div class="grid md:grid-cols-[1fr,auto,1fr] gap-6 items-center">
+                        
+                     
+                        <div class="space-y-2">
+                            <label for="binaryInput" class="block text-sm font-medium text-slate-400">
+                                Número Binário (0 e 1)
+                            </label>
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    id="binaryInput" 
+                                    placeholder="Ex: 1010" 
+                                    maxlength="32"
+                                    autocomplete="off"
+                                    class="w-full bg-slate-800 text-white text-2xl font-mono p-4 rounded-lg border-2 border-slate-700 focus:border-green-500 focus:ring-0 outline-none transition-all placeholder:text-slate-600"
+                                >
+                                <div id="errorMsg" class="absolute -bottom-6 left-0 text-red-400 text-xs hidden">
+                                    Apenas 0 e 1 são permitidos.
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="flex justify-center text-slate-600">
+                            <i data-lucide="arrow-right" class="w-8 h-8 hidden md:block"></i>
+                            <i data-lucide="arrow-down" class="w-8 h-8 block md:hidden"></i>
+                        </div>
+
+                      
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-slate-400">
+                                Decimal (Base 10)
+                            </label>
+                            <div class="relative group">
+                                <div class="w-full bg-slate-950 text-green-400 text-2xl font-mono p-4 rounded-lg border border-slate-800 min-h-[64px] flex items-center justify-between overflow-hidden">
+                                    <span id="decimalOutput" class="truncate">0</span>
+                                    
+                                    
+                                    <button onclick="copyToClipboard()" class="opacity-0 group-hover:opacity-100 transition-opacity p-2 hover:bg-slate-800 rounded text-slate-400 hover:text-white" title="Copiar">
+                                        <i data-lucide="copy" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                  
+                    <div class="mt-8 pt-6 border-t border-slate-800 flex justify-between items-center text-xs text-slate-500">
+                        <span id="statusText">Aguardando entrada...</span>
+                        <div class="flex gap-4">
+                            <span>Base 2 &rarr; Base 10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+       
+        <section id="como-funciona" class="max-w-5xl mx-auto mt-20">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-6 rounded-xl bg-slate-800/30 border border-slate-700 hover:border-green-500/30 transition-colors">
+                    <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="zap" class="text-green-400 w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Instantâneo</h3>
+                    <p class="text-slate-400 text-sm">A conversão acontece no momento em que você digita. Sem recarregar a página.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-slate-800/30 border border-slate-700 hover:border-green-500/30 transition-colors">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="shield-check" class="text-blue-400 w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Validação Automática</h3>
+                    <p class="text-slate-400 text-sm">O sistema impede caracteres inválidos. Se não é 0 ou 1, não entra.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-slate-800/30 border border-slate-700 hover:border-green-500/30 transition-colors">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center mb-4">
+                        <i data-lucide="code-2" class="text-purple-400 w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-white font-bold mb-2">Lógica Precisa</h3>
+                    <p class="text-slate-400 text-sm">Backend robusto preparado para cálculos de alta precisão.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    
+    <footer class="border-t border-slate-800 bg-slate-900 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <p>&copy; 2024 BinConverter. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    
+<script>
+const binaryInput = document.getElementById("binaryInput");
+const decimalOutput = document.getElementById("decimalOutput");
+const statusText = document.getElementById("statusText");
+
+async function convertBinaryToDecimal(binary) {
+    if (!binary) {
+        decimalOutput.innerText = "0";
+        return;
+    }
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/converter", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ bin: binary })
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            statusText.innerText = data.error;
+            return;
+        }
+
+        decimalOutput.innerText = data.decimal;
+        statusText.innerText = `Hexadecimal: ${data.hexadecimal}`;
+
+    } catch (err) {
+        statusText.innerText = "Erro ao conectar com o backend";
+        console.error(err);
+    }
+}
+
+binaryInput.addEventListener("input", (e) => {
+    const value = e.target.value.replace(/[^01]/g, "");
+    e.target.value = value;
+
+    statusText.innerText = value
+        ? "Convertendo..."
+        : "Aguardando entrada...";
+
+    convertBinaryToDecimal(value);
+});
+</script>
+
+
+</body>
+</html>
